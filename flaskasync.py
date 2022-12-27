@@ -3,6 +3,7 @@ import requests
 import json
 from time import perf_counter
 import asyncio
+from helpers import *
 
 app=Flask(__name__)
 
@@ -34,24 +35,3 @@ async def cat_async(num):
     print(f'Endpoint response time: {time}')
     return jsonify(cats),200   
 
-def get_cat_fact(num):
-    url='https://catfact.ninja/fact'
-    print(f'Cat fact {num} request started.')
-    response=requests.get(url)
-    print (f'Cat fact {num} request finished')
-    if response.status_code==200:        
-        obj=json.loads(response.text)
-        return obj['fact']
-    else:
-        raise None
-
-async def get_cat_fact_async(num):
-    url='https://catfact.ninja/fact'
-    print(f'Cat fact {num} request started.')
-    response= await requests.get(url)
-    print (f'Cat fact {num} request finished')
-    if response.status_code==200:        
-        obj=json.loads(response.text)
-        return obj['fact']
-    else:
-        raise None
