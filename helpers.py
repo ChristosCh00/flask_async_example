@@ -7,7 +7,7 @@ def get_cat_fact(num):
     url='https://catfact.ninja/fact'
     print(f'Request {num} started.')
     response=requests.get(url)
-    print (f'Request {num} finished')
+    print (f'Request {num} finished. Status {response.status}.')
     if response.status_code==200:        
         obj=json.loads(response.text)
         return obj['fact']
@@ -42,6 +42,6 @@ async def get_cat_fact_async(num):
 async def async_get(session, url,i):
     print(f'Request {i} started.')
     response=await session.get(url)
-    print (f'Request {i} finished. Status {response.status}')
+    print (f'Request {i} finished. Status {response.status}.')
 
     return response
