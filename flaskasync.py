@@ -1,6 +1,4 @@
 from flask import Flask,request, jsonify
-import requests
-import json
 from time import perf_counter
 import asyncio
 from helpers import *
@@ -26,12 +24,10 @@ def cat(num):
 @app.route('/cat_async/<int:num>',methods=['GET'])
 async def cat_async(num):
     time=perf_counter()
-    cats=[]
-    for n in range(num):
-        fact=await get_cat_fact_async(n)
-        cats.append(fact)
+    cats=await get_cat_fact_async(num)
 
     time=perf_counter()-time
+    #print(cats)
     print(f'Endpoint response time: {time}')
     return jsonify(cats),200   
 
