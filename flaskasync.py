@@ -27,7 +27,15 @@ async def cat_async(num):
     cats=await get_cat_fact_async(num)
 
     time=perf_counter()-time
-    #print(cats)
+    print(f'Endpoint response time: {time}')
+    return jsonify(cats),200   
+
+@app.route('/cat_async_limited/<int:num>',methods=['GET'])
+async def cat_async_limit(num):
+    time=perf_counter()
+    cats=await get_cat_fact_async_with_limit(num)
+
+    time=perf_counter()-time
     print(f'Endpoint response time: {time}')
     return jsonify(cats),200   
 

@@ -2,6 +2,7 @@ import json
 import requests
 import asyncio
 import aiohttp
+import limiter
 
 def get_cat_fact(num):
     url='https://catfact.ninja/fact'
@@ -14,6 +15,18 @@ def get_cat_fact(num):
     else:
         raise None
 
+def sync_get(url,i):
+    print(f'Request {i} started.')
+    response=requests.get(url)
+    print (f'Request {i} finished. Status {response.status_code}.')
+
+async def async_get(session, url,i):
+    print(f'Request {i} started.')
+    response=await session.get(url)
+    print (f'Request {i} finished. Status {response.status}.')
+
+    return response
+    
 async def get_cat_fact_async(num):
     url='https://catfact.ninja/fact'
     results=[]
@@ -37,9 +50,26 @@ async def get_cat_fact_async(num):
 
 
 
-async def async_get(session, url,i):
-    print(f'Request {i} started.')
-    response=await session.get(url)
-    print (f'Request {i} finished. Status {response.status}.')
-
-    return response
+async def get_cat_fact_async_with_limit(num):
+    url='https://catfact.ninja/fact'
+    results=[]    
+    
+    #async with aiohttp.ClientSession() as session:        
+    for i in range(num):
+        limiter.q.put(url)
+    
+    limiter.q.put(None)
+    limiter.event.wait()  
+    responses= limiter.results.copy()
+    limiter.results=[]
+    limiter.event.clear()
+    count=0   
+    for response in responses:
+        status=response.status
+        if status==200:
+            json=await response.json()
+            results.append(json['fact'])
+            count+=1
+    print(f'Successful count = {count}')
+            
+    return  results
