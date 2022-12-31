@@ -8,6 +8,7 @@ import helpers
 
 q=Queue(maxsize=0) ## infinite size queue
 event=threading.Event()
+stop_event=threading.Event()
 
 
 def submit_item_to_queue(item):
@@ -38,7 +39,7 @@ def send_results():
 
 async def callback():
 
-    global q, event, limit,rate,counter, results,batch_size,url_of_batch 
+    global q, event, limit,rate,counter, results,batch_size,url_of_batch, stop_event
     tasks=[]
     responses=[]  
     time1=0    
@@ -47,7 +48,7 @@ async def callback():
     print("Task Queue started...")    
     try:    
         while True:
-            if event.is_set() is False:
+            if not event.is_set():
                 if q.qsize()>0:  
                     url=q.get()
                     if batch_size==0:
@@ -89,6 +90,10 @@ async def callback():
                 if perf_counter()-time1>=60 and time1>0 and counter==0:
                     counter=0   
                     time1=0
+
+            if stop_event.is_set():   
+                break 
     except KeyboardInterrupt:
         pass        
 
+    print("Task Queue finished")
