@@ -82,12 +82,14 @@ async def callback():
                         if q.qsize()>0 and q.queue[0] is None:
                             send_results()
                         elapsed_time=perf_counter()-time1
+                        sleep_time=rate-elapsed_time
+                        print(f"Sleeping for {sleep_time} seconds to reset API limit...")
                         sleep(rate-elapsed_time)
                         counter=0   
                         time1=0
 
                 
-                if perf_counter()-time1>=60 and time1>0 and counter==0:
+                if perf_counter()-time1>=60 and time1>0:
                     counter=0   
                     time1=0
 
