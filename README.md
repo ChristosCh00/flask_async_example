@@ -7,6 +7,7 @@ Thanks to the free API https://catfact.ninja/ that was used in this demo.
 
 # Scenario - Applied constraints:
 a) Flask must be used. Flask[async] can be used to have async endpoint functions, however there are limitiations. There are other modules that are async-first, such as Quart.
+
 b) The API that our endpoints are consuming can only be hit once to provide a single cat fact. Even though the Cat Facts API has the ability to return a list of facts for 1 request, we will pretend that this is not an option and that our only option is to use the /fact endpoint. That is to simulate similar 1-to-1 with high volume of requests.
 
 
