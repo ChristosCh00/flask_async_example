@@ -27,7 +27,7 @@ b) http://127.0.0.1:5000/cat_async/{int:N} -GET
  
 c) http://127.0.0.1:5000/cat_async_limited/{int:N} -GET
 
- This will return N cat facts. This endpoint will perform N requests to the external API in an asynchronous manner, collect the their results and return them in a list. In this case, the set up gets more complex in order to solve the limit issue from the /cat_async endpoint. The endpoint sumbits the request info to task queue running on a background thread that has it's own event loop. There the requests are constructed and performed in a way that guarantees that the external API limits are respected. The background thread keeps track of time and of the items going through the queue and when limit is met it sleeps for the time need to reset.
+ This will return N cat facts. This endpoint will perform N requests to the external API in an asynchronous manner, collect the their results and return them in a list. In this case, the set up gets more complex in order to solve the limit issue from the /cat_async endpoint. The endpoint sumbits the request info to task queue running on a background thread that has it's own event loop and then waits for an event that signals that the responses are in. There the requests are constructed and performed in a way that guarantees that the external API limits are respected. The background thread keeps track of time and of the items going through the queue and when limit is met it sleeps for the time need to reset.
  
 # Installation
 Please install the dependencies from the requirements.txt and run WSGI.py. The API will be listening on http://127.0.0.1:5000.
