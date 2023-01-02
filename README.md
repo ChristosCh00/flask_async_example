@@ -1,5 +1,5 @@
 # flask_async_example
-A simple Flask app to demonstrate an async endpoint.
+A simple Flask app to demonstrate async endpoints.
 
 This repo includes 3 endpoints with 3 different implementations of consuming the same API, each by adding some degree of complexity.
 Thanks to the free API https://catfact.ninja/ that was used in this demo.
