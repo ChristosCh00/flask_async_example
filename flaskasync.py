@@ -13,9 +13,10 @@ def hello():
 def cat(num):
     time=perf_counter()
     cats=[]
-    for n in range(num):
-        fact=get_cat_fact(n)
-        cats.append(fact)
+    if num>0:
+        for n in range(num):
+            fact=get_cat_fact(n)
+            cats.append(fact)
 
     time=perf_counter()-time
     print(f'Endpoint response time: {time}')
@@ -24,7 +25,9 @@ def cat(num):
 @app.route('/cat_async/<int:num>',methods=['GET'])
 async def cat_async(num):
     time=perf_counter()
-    cats=await get_cat_fact_async(num)
+    cats=[]
+    if num>0:
+        cats=await get_cat_fact_async(num)
 
     time=perf_counter()-time
     print(f'Endpoint response time: {time}')
@@ -33,7 +36,9 @@ async def cat_async(num):
 @app.route('/cat_async_limited/<int:num>',methods=['GET'])
 async def cat_async_limit(num):
     time=perf_counter()
-    cats=await get_cat_fact_async_with_limit(num)
+    cats=[]
+    if num>0:
+        cats=await get_cat_fact_async_with_limit(num)
 
     time=perf_counter()-time
     print(f'Endpoint response time: {time}')
