@@ -1,9 +1,30 @@
+from __future__ import annotations
+from typing import Coroutine
 import asyncio
 import threading
 from queue import Queue
 import aiohttp
 from time import perf_counter, sleep
 import helpers
+
+
+class RequestOptions:
+    '''
+    A class to be used for sending all the necssary info 
+    to construct an request from the helpers module.
+    '''
+    #### TODO #### Should include more functionality to this class, 
+    # but there's no need for now
+    def __init__(self,url,method,request_index):
+        self.method=method
+        self.url=url
+        self.request_index=request_index ## just for logging purposes
+
+    def produce_request_from_options(session:aiohttp.ClientSession,options:RequestOptions) -> Coroutine:
+        if options.method=='GET':
+            return helpers.async_get(session,options.url,options.request_index)
+        else:
+            raise ValueError ("Only 'GET' is currently supported.")
 
 
 q=Queue(maxsize=0) ## infinite size queue
@@ -44,39 +65,39 @@ async def callback():
     responses=[]  
     time1=0    
     counter=0
-    url = 0
+    options=[]
     print("Task Queue started...")    
     try:    
         while True:
             if not event.is_set():
                 if q.qsize()>0:  
-                    url=q.get()
-                    if batch_size==0:
-                        url_of_batch=url
-                    if url:
+                    item=q.get()
+                    if item:
+                        options.append(item)
                         counter+=1
                         batch_size+=1
                         
                     no=batch_size-len(results)    
-                    if url is None and counter>0:
+                    if item is None and counter>0:
                         async with aiohttp.ClientSession() as session:
                             for i in range(no):
-                                tasks.append(helpers.async_get(session,url_of_batch,i))
-                            if time1==0:    
+                                tasks.append(RequestOptions.produce_request_from_options(session,options[i]))
                                 time1=perf_counter()                         
                             responses=  await asyncio.gather(*tasks)
                         tasks.clear()
+                        options.clear()
                         results.extend(responses)
                         responses.clear()
                         send_results()
                     elif counter==limit :
                         async with aiohttp.ClientSession() as session:
                             for i in range(no):
-                                tasks.append(helpers.async_get(session,url,i))
+                                tasks.append(RequestOptions.produce_request_from_options(session,options[i]))
                             if time1==0:    
                                 time1=perf_counter()  
                             responses= await asyncio.gather(*tasks)
                         tasks.clear()
+                        options.clear()
                         results.extend(responses)
                         responses.clear()
                         if q.qsize()>0 and q.queue[0] is None:

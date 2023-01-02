@@ -37,28 +37,27 @@ async def get_cat_fact_async(num):
             tasks.append(async_get(session,url,i))
 
         responses= await asyncio.gather(*tasks)   
-        count=0   
-        for response in responses:
-            status=response.status
-            if status==200:
-                json=await response.json()
-                results.append(json['fact'])
-                count+=1
-        print(f'Successful count = {count}')
+    count=0   
+    for response in responses:
+        status=response.status
+        if status==200:
+            json=await response.json()
+            results.append(json['fact'])
+            count+=1
+    print(f'Successful count = {count}')
                
-        return  results
+    return  results
 
 
 
 async def get_cat_fact_async_with_limit(num):
     url='https://catfact.ninja/fact'
-    results=[]    
-    
-    #async with aiohttp.ClientSession() as session:        
+    results=[]
     for i in range(num):
-        limiter.q.put(url)
+        options=limiter.RequestOptions(url,'GET',i)
+        limiter.q.put(options)
     
-    limiter.q.put(None)
+    limiter.q.put(None) ## signal that the batch is over
     limiter.event.wait()  
     responses= limiter.results.copy()
     limiter.results=[]

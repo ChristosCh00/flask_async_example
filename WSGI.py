@@ -6,7 +6,7 @@ import time
 
 def close_thread(thread):
     limiter.stop_event.set()
-    time.sleep(0.5)# just giving it some toime to gracefully stop and print the message
+    time.sleep(0.1)# just giving it some time to gracefully stop and print the message
 
 
 if __name__== '__main__':
