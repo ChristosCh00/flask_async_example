@@ -8,7 +8,7 @@ Thanks to the free API https://catfact.ninja/ that was used in this demo.
 # Scenario - Applied constraints:
 a) Flask must be used. Flask[async] can be used to have async endpoint functions, however there are limitiations. There are other modules that are async-first, such as Quart.
 
-b) The API that our endpoints are consuming can only be hit once to provide a single cat fact. Even though the Cat Facts API has the ability to return a list of facts for 1 request, we will pretend that this is not an option and that our only option is to use the /fact endpoint. That is to simulate similar 1-to-1 with high volume of requests.
+b) The API that our endpoints are consuming can only be hit once to provide a single cat fact. Even though the Cat Facts API has the ability to return a list of facts for 1 request, we will pretend that this is not an option and that our only option is to use the /fact endpoint. That is to simulate similar 1-to-1 cases with high volume of requests.
 
 
 
@@ -20,11 +20,11 @@ NOTES:
 
 a) http://127.0.0.1:5000/cat/{int:N} -GET
 
- This will return N cat facts. This endpoint will perform N requests to the external API in a synchronous manner, collect the their results and return them in a list. If the external API limit is exceeded it will retrun an error.
+ This will return N cat facts. This endpoint will perform N requests to the external API in a synchronous manner, collect the their results and return them in a list. If the external API limit is exceeded it will raise an error.
  
 b) http://127.0.0.1:5000/cat_async/{int:N} -GET
 
- This will return N cat facts. This endpoint will perform N requests to the external API in an asynchronous manner, collect the their results and return them in a list. In this case it is quite possible that the external API limitis will be exceeded. If that happens and we will start getting 429 responses. These will discarded and only the 200 will be returned. So there is a chance that we get fewer cat facts than what we asked for.
+ This will return N cat facts. This endpoint will perform N requests to the external API in an asynchronous manner, collect the their results and return them in a list. In this case it is quite possible that the external API limitis will be exceeded. If that happens, we will start getting 429 responses. These will be discarded and only the 200 will be returned. So there is a chance that we get fewer cat facts than what we asked for.
  
 c) http://127.0.0.1:5000/cat_async_limited/{int:N} -GET
 
