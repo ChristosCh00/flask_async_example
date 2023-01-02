@@ -13,7 +13,7 @@ def get_cat_fact(num):
         obj=json.loads(response.text)
         return obj['fact']
     else:
-        raise None
+        raise NotImplementedError("A response was had a status othern than 200. Only 200 has been implemented.")
 
 def sync_get(url,i):
     print(f'Request {i} started.')
